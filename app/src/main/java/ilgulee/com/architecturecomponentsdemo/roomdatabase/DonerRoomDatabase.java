@@ -1,9 +1,12 @@
 package ilgulee.com.architecturecomponentsdemo.roomdatabase;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
 import ilgulee.com.architecturecomponentsdemo.dao.DonerDao;
 import ilgulee.com.architecturecomponentsdemo.entity.Doner;
@@ -71,10 +74,39 @@ public abstract class DonerRoomDatabase extends RoomDatabase {
                             DonerRoomDatabase.class,
                             "doner_database")
                             .fallbackToDestructiveMigration()
+                            .addCallback(roomCallback)
                             .build();
                 }
             }
         }
         return INSTANCE;
+    }
+
+    /**
+     * Insert the stub data into database after creating database instance
+     */
+    private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback() {
+        @Override
+        public void onCreate(@NonNull SupportSQLiteDatabase db) {
+            super.onCreate(db);
+            new PopulateStubAsynTask(INSTANCE).execute();
+        }
+    };
+
+    private static class PopulateStubAsynTask extends AsyncTask<Void, Void, Void> {
+        private DonerDao mPopulateStubAsynTaskDao;
+
+        public PopulateStubAsynTask(DonerRoomDatabase db) {
+            mPopulateStubAsynTaskDao = db.donerDao();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mPopulateStubAsynTaskDao.insert(new Doner("Ilgu Lee", "iglee@gmail.com", "Toronto", "Type O", 3));
+            mPopulateStubAsynTaskDao.insert(new Doner("Samho Kim", "samho@gmail.com", "Seoul", "Type B", 2));
+            mPopulateStubAsynTaskDao.insert(new Doner("Yeonhee Seo", "yeonhee@gmail.com", "Mokpo", "Type AB", 1));
+
+            return null;
+        }
     }
 }
