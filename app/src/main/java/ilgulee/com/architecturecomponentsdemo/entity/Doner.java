@@ -13,19 +13,19 @@ public class Doner {
 
     @PrimaryKey(autoGenerate = true)
     private Integer Id;
-
     @ColumnInfo(name = "name")
     @NonNull
     private String fullName;
-
+    @NonNull
     private String email;
+    @NonNull
     private String city;
-    private int priority;
-
+    @NonNull
+    private Integer priority;
     @NonNull
     private String bloodGroup;
 
-    public Doner(@NonNull String fullName, String email, String city, @NonNull String bloodGroup, int priority) {
+    public Doner(@NonNull String fullName, @NonNull String email, @NonNull String city, @NonNull String bloodGroup, @NonNull Integer priority) {
         this.fullName = fullName;
         this.email = email;
         this.city = city;
@@ -41,20 +41,22 @@ public class Doner {
         return Id;
     }
 
-    public int getPriority() {
+    @NonNull
+    public Integer getPriority() {
         return priority;
     }
-
 
     @NonNull
     public String getFullName() {
         return fullName;
     }
 
+    @NonNull
     public String getEmail() {
         return email;
     }
 
+    @NonNull
     public String getCity() {
         return city;
     }

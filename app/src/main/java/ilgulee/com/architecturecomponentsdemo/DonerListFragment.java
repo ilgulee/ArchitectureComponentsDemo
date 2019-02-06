@@ -23,19 +23,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import ilgulee.com.architecturecomponentsdemo.entity.Doner;
-
-import static android.app.Activity.RESULT_OK;
+import ilgulee.com.architecturecomponentsdemo.viewmodel.DonerViewModel;
 
 public class DonerListFragment extends Fragment {
     private static final String TAG = "DonerListFragment";
-    public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.floatingActionButton)
     FloatingActionButton mFab;
     private DonerAdapter mDonerAdapter;
     private Unbinder mUnbinder;
-    private DonerViewModel mViewModel;
 
     @Nullable
     @Override
@@ -46,7 +43,7 @@ public class DonerListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), DonerAddActivity.class);
-                startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
+                startActivity(intent);
             }
         });
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -57,8 +54,8 @@ public class DonerListFragment extends Fragment {
     }
 
     private void updateUI() {
-        mViewModel = ViewModelProviders.of(this).get(DonerViewModel.class);
-        mViewModel.getAllDoners().observe(this, new Observer<List<Doner>>() {
+        DonerViewModel viewModel = ViewModelProviders.of(this).get(DonerViewModel.class);
+        viewModel.getAllDoners().observe(this, new Observer<List<Doner>>() {
             @Override
             public void onChanged(@Nullable List<Doner> doners) {
                 mDonerAdapter.dataUpdate(doners);
@@ -66,24 +63,6 @@ public class DonerListFragment extends Fragment {
         });
         mRecyclerView.setAdapter(mDonerAdapter);
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            String name = data.getStringExtra(DonerAddFragment.EXTRA_NAME);
-            String bloodType = data.getStringExtra(DonerAddFragment.EXTRA_BLOOD);
-            String city = data.getStringExtra(DonerAddFragment.EXTRA_CITY);
-            String email = data.getStringExtra(DonerAddFragment.EXTRA_EMAIL);
-            int priority = data.getIntExtra(DonerAddFragment.EXTRA_PRIORITY, 1);
-            mViewModel.insert(new Doner(name, email, city, bloodType, priority));
-        } else {
-            Toast.makeText(
-                    getActivity(),
-                    "Not saved",
-                    Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override
@@ -119,6 +98,7 @@ public class DonerListFragment extends Fragment {
         }
 
         public void dataUpdate(List<Doner> doners) {
+            mDoners.clear();
             mDoners = doners;
             notifyDataSetChanged();
         }

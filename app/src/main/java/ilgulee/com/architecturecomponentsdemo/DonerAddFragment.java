@@ -1,6 +1,6 @@
 package ilgulee.com.architecturecomponentsdemo;
 
-import android.content.Intent;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,22 +14,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.NumberPicker;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
+import ilgulee.com.architecturecomponentsdemo.entity.Doner;
+import ilgulee.com.architecturecomponentsdemo.viewmodel.DonerViewModel;
 
 public class DonerAddFragment extends Fragment {
     private static final String TAG = "DonerAddFragment";
-    public static final String EXTRA_NAME = "ilgulee.com.architecturecomponentsdemo.EXTRA_NAME";
-    public static final String EXTRA_BLOOD = "ilgulee.com.architecturecomponentsdemo.EXTRA_BLOOD";
-    public static final String EXTRA_CITY = "ilgulee.com.architecturecomponentsdemo.EXTRA_CITY";
-    public static final String EXTRA_EMAIL = "ilgulee.com.architecturecomponentsdemo.EXTRA_EMAIL";
-    public static final String EXTRA_PRIORITY = "ilgulee.com.architecturecomponentsdemo.EXTRA_PRIORITY";
-
     private Unbinder mUnbinder;
     @BindView(R.id.doner_name)
     EditText name;
@@ -49,30 +43,22 @@ public class DonerAddFragment extends Fragment {
     }
 
     private void saveDoner() {
-        Intent replyIntent = new Intent();
         if (TextUtils.isEmpty(name.getText()) || TextUtils.isEmpty(bloodType.getText())
                 || TextUtils.isEmpty(city.getText()) || TextUtils.isEmpty(email.getText())
                 || TextUtils.isEmpty(String.valueOf(priority.getValue()))) {
-            getActivity().setResult(RESULT_CANCELED, replyIntent);
+            Toast.makeText(getActivity(), "Enter all inputs", Toast.LENGTH_SHORT).show();
         } else {
             String donerName = name.getText().toString();
             String blood = bloodType.getText().toString();
             String address = city.getText().toString();
             String emailAddress = email.getText().toString();
             int priorityNumber = priority.getValue();
-
-            replyIntent.putExtra(EXTRA_NAME, donerName);
-            replyIntent.putExtra(EXTRA_BLOOD, blood);
-            replyIntent.putExtra(EXTRA_CITY, address);
-            replyIntent.putExtra(EXTRA_EMAIL, emailAddress);
-            replyIntent.putExtra(EXTRA_PRIORITY, priorityNumber);
-
-            getActivity().setResult(RESULT_OK, replyIntent);
+            Doner doner = new Doner(donerName, emailAddress, address, blood, priorityNumber);
+            DonerViewModel viewModel = ViewModelProviders.of(this).get(DonerViewModel.class);
+            viewModel.insert(doner);
+            getActivity().finish();
         }
-        getActivity().finish();
-
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -89,18 +75,14 @@ public class DonerAddFragment extends Fragment {
         return true;
     }
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getActivity().setTitle("Add Doner");
-
         View view = inflater.inflate(R.layout.fragment_doner, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-
         priority.setMinValue(1);
         priority.setMaxValue(3);
-
         return view;
     }
 

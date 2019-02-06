@@ -37,6 +37,11 @@ import ilgulee.com.architecturecomponentsdemo.entity.Doner;
  * <p>
  * For a sample, destroying and re-creating the database is a fine migration strategy.
  * For a real app, you must implement a migration strategy.
+ * <p>
+ * When you modify the database schema, you'll need to update the version number and define how to handle migrations.
+ * <p>
+ * For a sample, destroying and re-creating the database is a fine migration strategy.
+ * For a real app, you must implement a migration strategy.
  */
 
 /**
@@ -51,7 +56,7 @@ import ilgulee.com.architecturecomponentsdemo.entity.Doner;
  * Even though it is not mandatory, it is a good practice to have version history in your codebase
  * and you should commit that file into your version control system (but don't ship it with your app!).
  */
-@Database(entities = {Doner.class}, version = 1, exportSchema = false)
+@Database(entities = {Doner.class}, version = 2, exportSchema = false)
 public abstract class DonerRoomDatabase extends RoomDatabase {
     public abstract DonerDao donerDao();
 
