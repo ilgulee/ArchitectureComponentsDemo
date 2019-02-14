@@ -1,4 +1,4 @@
-package ilgulee.com.architecturecomponentsdemo;
+package ilgulee.com.architecturecomponentsdemo.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import butterknife.ButterKnife;
+import ilgulee.com.architecturecomponentsdemo.R;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
     private static final String TAG = "SingleFragmentActivity";

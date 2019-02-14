@@ -1,4 +1,4 @@
-package ilgulee.com.architecturecomponentsdemo;
+package ilgulee.com.architecturecomponentsdemo.ui;
 
 import android.support.v4.app.Fragment;
 

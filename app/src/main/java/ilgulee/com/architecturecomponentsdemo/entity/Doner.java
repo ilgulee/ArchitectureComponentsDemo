@@ -65,4 +65,24 @@ public class Doner {
     public String getBloodGroup() {
         return bloodGroup;
     }
+
+    public void setFullName(@NonNull String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setEmail(@NonNull String email) {
+        this.email = email;
+    }
+
+    public void setCity(@NonNull String city) {
+        this.city = city;
+    }
+
+    public void setPriority(@NonNull Integer priority) {
+        this.priority = priority;
+    }
+
+    public void setBloodGroup(@NonNull String bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
 }

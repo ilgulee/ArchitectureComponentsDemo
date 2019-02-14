@@ -1,4 +1,4 @@
-package ilgulee.com.architecturecomponentsdemo;
+package ilgulee.com.architecturecomponentsdemo.ui;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import ilgulee.com.architecturecomponentsdemo.R;
 import ilgulee.com.architecturecomponentsdemo.entity.Doner;
 import ilgulee.com.architecturecomponentsdemo.viewmodel.DonerViewModel;
 

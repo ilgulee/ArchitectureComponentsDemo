@@ -1,4 +1,4 @@
-package ilgulee.com.architecturecomponentsdemo;
+package ilgulee.com.architecturecomponentsdemo.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -8,13 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import ilgulee.com.architecturecomponentsdemo.R;
 import ilgulee.com.architecturecomponentsdemo.entity.Doner;
+import ilgulee.com.architecturecomponentsdemo.viewmodel.DonerEditViewModel;
 import ilgulee.com.architecturecomponentsdemo.viewmodel.DonerViewModel;
 
 public class DonerListFragment extends Fragment {
@@ -33,6 +36,7 @@ public class DonerListFragment extends Fragment {
     FloatingActionButton mFab;
     private DonerAdapter mDonerAdapter;
     private Unbinder mUnbinder;
+    private DonerViewModel mDonerViewModel;
 
     @Nullable
     @Override
@@ -54,15 +58,29 @@ public class DonerListFragment extends Fragment {
     }
 
     private void updateUI() {
-        DonerViewModel viewModel = ViewModelProviders.of(this).get(DonerViewModel.class);
-        viewModel.getAllDoners().observe(this, new Observer<List<Doner>>() {
+        mDonerViewModel = ViewModelProviders.of(this).get(DonerViewModel.class);
+        mDonerViewModel.getAllDoners().observe(this, new Observer<List<Doner>>() {
             @Override
             public void onChanged(@Nullable List<Doner> doners) {
                 mDonerAdapter.dataUpdate(doners);
             }
         });
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mDonerAdapter);
+        ItemTouchHelper helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, (ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)) {
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                        return false;
+                    }
 
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+                        Doner selectedDoner = mDonerAdapter.getDonerItemAt(viewHolder.getAdapterPosition());
+                        mDonerViewModel.delete(selectedDoner);
+                    }
+                });
+        helper.attachToRecyclerView(mRecyclerView);
     }
 
     @Override
@@ -102,6 +120,10 @@ public class DonerListFragment extends Fragment {
             mDoners = doners;
             notifyDataSetChanged();
         }
+
+        public Doner getDonerItemAt(int position) {
+            return mDoners.get(position);
+        }
     }
 
     public class DonerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -125,7 +147,13 @@ public class DonerListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), mDoner.getFullName() + " clicked!", Toast.LENGTH_SHORT).show();
+            DonerEditViewModel donerEditViewModel = ViewModelProviders.of(getActivity()).get(DonerEditViewModel.class);
+            donerEditViewModel.getDoner().setValue(mDoner);
+
+//            Toast.makeText(getActivity(), donerEditViewModel.getDoner().getValue().getFullName(),Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(getActivity(), DonerEditActivity.class);
+            startActivity(intent);
         }
     }
 }

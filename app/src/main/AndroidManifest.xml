@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DonerActivity">
+        <activity android:name=".ui.DonerEditActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DonerListActivity"
+            android:name=".ui.DonerListActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,8 +26,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DonerAddActivity"
-            android:parentActivityName=".DonerAddActivity">
+            android:name=".ui.DonerAddActivity"
+            android:parentActivityName=".ui.DonerAddActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
